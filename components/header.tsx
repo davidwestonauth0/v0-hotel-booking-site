@@ -1,0 +1,77 @@
+"use client"
+
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+
+interface User {
+  name?: string
+  email?: string
+}
+
+export function Header() {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me")
+        const data = await res.json()
+        setUser(data.user || null)
+      } catch (error) {
+        console.error("Failed to fetch user:", error)
+        setUser(null)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchUser()
+  }, [])
+
+  return (
+    <header className="bg-white border-b border-border sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">0</div>
+            <span className="font-bold text-lg text-foreground">Hotel0</span>
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/" className="text-foreground hover:text-primary transition">
+              Hotels
+            </Link>
+            {user && (
+              <Link href="/bookings" className="text-foreground hover:text-primary transition">
+                My Bookings
+              </Link>
+            )}
+          </nav>
+
+          <div className="flex items-center gap-4">
+            {!isLoading && !user && (
+              <>
+                <Link href="/api/auth/login">
+                  <Button variant="ghost">Sign In</Button>
+                </Link>
+                <Link href="/api/auth/login?screen_hint=signup">
+                  <Button className="bg-primary hover:bg-primary/90 text-white">Sign Up</Button>
+                </Link>
+              </>
+            )}
+            {user && (
+              <>
+                <span className="text-sm text-foreground">{user.name}</span>
+                <Link href="/api/auth/logout">
+                  <Button variant="ghost">Sign Out</Button>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
