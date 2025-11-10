@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { createContext, useContext, useEffect, useState } from "react"
 
 interface User {
@@ -12,18 +11,18 @@ interface User {
 }
 
 interface AuthContextType {
-  user: User | null
+  user: User | null | undefined
   isLoading: boolean
   error?: Error
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null,
+  user: undefined,
   isLoading: true,
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error>()
 
