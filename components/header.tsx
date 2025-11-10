@@ -43,13 +43,13 @@ export function Header() {
                   <Link href="/bookings">My Bookings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <a href="/api/auth/logout">Logout</a>
+                  <a href="/auth/logout">Logout</a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <Button asChild>
-              <a href="/api/auth/login">Sign In</a>
+              <a href="/auth/login">Sign In</a>
             </Button>
           )}
 
