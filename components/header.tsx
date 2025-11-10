@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useUser } from "@auth0/nextjs-auth0/client"
+import { useUser } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 
 export function Header() {

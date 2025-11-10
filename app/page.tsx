@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { SearchFilter } from "@/components/search-filter"
 import { HotelCard } from "@/components/hotel-card"
-import { useUser } from "@auth0/nextjs-auth0/client"
+import { useUser } from "@/components/auth-provider"
 
 interface User {
   name?: string
