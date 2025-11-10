@@ -144,7 +144,7 @@ export default function Home() {
               Create an account to access exclusive deals and manage your bookings
             </p>
             {!user && (
-              <Link href="/auth/login">
+              <Link href="/api/auth/login">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
                   Sign In to Get Started
                 </Button>

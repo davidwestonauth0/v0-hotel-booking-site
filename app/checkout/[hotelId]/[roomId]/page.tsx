@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useParams, useSearchParams } from "next/navigation"
 import { useUser } from "@/components/auth-provider"
@@ -20,7 +20,7 @@ interface User {
 export default function CheckoutPage() {
   const params = useParams()
   const searchParams = useSearchParams()
-  const { user } = useUser()
+  const { user, isLoading } = useUser()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
   const checkIn = searchParams.get("checkIn") || ""
@@ -37,6 +37,17 @@ export default function CheckoutPage() {
   const [cardNumber, setCardNumber] = useState("")
   const [expiryDate, setExpiryDate] = useState("")
   const [cvv, setCvv] = useState("")
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      if (user.name) {
+        setGuestName(user.name)
+      }
+      if (user.email) {
+        setGuestEmail(user.email)
+      }
+    }
+  }, [user, isLoading])
 
   const calculateNights = () => {
     if (!checkIn || !checkOut) return 0
@@ -99,6 +110,11 @@ export default function CheckoutPage() {
             {/* Guest Information */}
             <Card className="p-6">
               <h2 className="text-xl font-bold mb-4 text-foreground">Guest Information</h2>
+              {user && (
+                <p className="text-sm text-muted-foreground mb-4">
+                  You're booking as <span className="font-medium text-foreground">{user.email}</span>
+                </p>
+              )}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2 text-foreground">Full Name</label>
@@ -107,6 +123,8 @@ export default function CheckoutPage() {
                     onChange={(e) => setGuestName(e.target.value)}
                     placeholder="Your full name"
                     required={user ? false : true}
+                    disabled={!!user}
+                    className={user ? "bg-muted" : ""}
                   />
                 </div>
                 <div>
@@ -117,6 +135,8 @@ export default function CheckoutPage() {
                     placeholder="your@email.com"
                     type="email"
                     required={user ? false : true}
+                    disabled={!!user}
+                    className={user ? "bg-muted" : ""}
                   />
                 </div>
               </div>
@@ -240,12 +260,12 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
                 <Link
-                  href={`/auth/login?screen_hint=signup&login_hint=${encodeURIComponent(guestEmail)}`}
+                  href={`/api/auth/login?screen_hint=signup&login_hint=${encodeURIComponent(guestEmail)}`}
                   className="block"
                 >
                   <Button className="w-full bg-primary hover:bg-primary/90 text-white">Create Account</Button>
                 </Link>
-                <Link href={`/auth/login?login_hint=${encodeURIComponent(guestEmail)}`} className="block">
+                <Link href={`/api/auth/login?login_hint=${encodeURIComponent(guestEmail)}`} className="block">
                   <Button variant="outline" className="w-full bg-transparent">
                     Sign In
                   </Button>

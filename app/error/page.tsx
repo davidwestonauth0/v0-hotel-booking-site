@@ -53,7 +53,7 @@ export default function ErrorPage() {
                 Return Home
               </Button>
             </Link>
-            <Link href="/auth/login">
+            <Link href="/api/auth/login">
               <Button variant="outline">Try Again</Button>
             </Link>
           </div>
