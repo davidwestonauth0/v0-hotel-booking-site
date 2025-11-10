@@ -240,12 +240,12 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
                 <Link
-                  href={`/api/auth/login?screen_hint=signup&login_hint=${encodeURIComponent(guestEmail)}`}
+                  href={`/auth/login?screen_hint=signup&login_hint=${encodeURIComponent(guestEmail)}`}
                   className="block"
                 >
                   <Button className="w-full bg-primary hover:bg-primary/90 text-white">Create Account</Button>
                 </Link>
-                <Link href={`/api/auth/login?login_hint=${encodeURIComponent(guestEmail)}`} className="block">
+                <Link href={`/auth/login?login_hint=${encodeURIComponent(guestEmail)}`} className="block">
                   <Button variant="outline" className="w-full bg-transparent">
                     Sign In
                   </Button>

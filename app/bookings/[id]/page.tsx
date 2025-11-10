@@ -71,7 +71,7 @@ export default function BookingDetailPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/api/auth/login")
+      router.push("/auth/login")
     }
   }, [user, isLoading, router])
 

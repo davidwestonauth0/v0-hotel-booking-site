@@ -30,10 +30,10 @@ export function Header() {
           <div className="flex items-center gap-4">
             {!isLoading && !user && (
               <>
-                <Link href="/api/auth/login">
+                <Link href="/auth/login">
                   <Button variant="ghost">Sign In</Button>
                 </Link>
-                <Link href="/api/auth/login?screen_hint=signup">
+                <Link href="/auth/login?screen_hint=signup">
                   <Button className="bg-primary hover:bg-primary/90 text-white">Sign Up</Button>
                 </Link>
               </>
@@ -41,7 +41,7 @@ export function Header() {
             {user && (
               <>
                 <span className="text-sm text-foreground">{user.name}</span>
-                <Link href="/api/auth/logout">
+                <Link href="/auth/logout">
                   <Button variant="ghost">Sign Out</Button>
                 </Link>
               </>
