@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@auth0/nextjs-auth0':
-        specifier: latest
+        specifier: ^4.12.0
         version: 4.12.0(next@16.0.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@hookform/resolvers':
         specifier: ^3.10.0
