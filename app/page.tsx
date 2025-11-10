@@ -1,7 +1,16 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { MapPin, Star } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { MapPin, Star, CalendarIcon, Users, Search } from "lucide-react"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 const hotels = [
   {
@@ -34,6 +43,11 @@ const hotels = [
 ]
 
 export default function Page() {
+  const [checkIn, setCheckIn] = useState<Date>()
+  const [checkOut, setCheckOut] = useState<Date>()
+  const [guests, setGuests] = useState("2")
+  const [location, setLocation] = useState("")
+
   return (
     <main className="container mx-auto px-4 py-12">
       <section className="text-center mb-16">
@@ -41,9 +55,89 @@ export default function Page() {
         <p className="text-xl text-muted-foreground mb-8">
           Book luxury hotels across the UK with the best prices guaranteed
         </p>
-        <Button size="lg" asChild>
-          <a href="/auth/login">Get Started</a>
-        </Button>
+      </section>
+
+      <section className="mb-16">
+        <Card>
+          <CardHeader>
+            <CardTitle>Search Hotels</CardTitle>
+            <CardDescription>Find your ideal accommodation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="location"
+                    placeholder="Where are you going?"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Check-in</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn("w-full justify-start text-left font-normal", !checkIn && "text-muted-foreground")}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {checkIn ? format(checkIn, "PPP") : "Select date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar mode="single" selected={checkIn} onSelect={setCheckIn} initialFocus />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Check-out</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn("w-full justify-start text-left font-normal", !checkOut && "text-muted-foreground")}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {checkOut ? format(checkOut, "PPP") : "Select date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar mode="single" selected={checkOut} onSelect={setCheckOut} initialFocus />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="guests">Guests</Label>
+                <div className="relative">
+                  <Users className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="guests"
+                    type="number"
+                    min="1"
+                    value={guests}
+                    onChange={(e) => setGuests(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" size="lg">
+              <Search className="mr-2 h-4 w-4" />
+              Search Hotels
+            </Button>
+          </CardFooter>
+        </Card>
       </section>
 
       <section>
