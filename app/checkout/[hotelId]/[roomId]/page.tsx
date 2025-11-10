@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useParams, useSearchParams } from "next/navigation"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,8 +20,7 @@ interface User {
 export default function CheckoutPage() {
   const params = useParams()
   const searchParams = useSearchParams()
-  const [user, setUser] = useState<User | null>(null)
-  const [isGuest, setIsGuest] = useState(true)
+  const { user } = useUser()
   const [showAuthModal, setShowAuthModal] = useState(false)
 
   const checkIn = searchParams.get("checkIn") || ""
@@ -53,7 +53,7 @@ export default function CheckoutPage() {
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (isGuest && (!guestName || !guestEmail)) {
+    if (!user && (!guestName || !guestEmail)) {
       alert("Please fill in your name and email")
       return
     }
@@ -66,9 +66,9 @@ export default function CheckoutPage() {
     setIsProcessing(true)
     // Simulate booking processing
     setTimeout(() => {
-      const bookingEmail = isGuest ? guestEmail : user?.email
+      const bookingEmail = user ? user.email : guestEmail
       alert(`Booking confirmed! Confirmation sent to ${bookingEmail}`)
-      if (isGuest) {
+      if (!user) {
         setShowAuthModal(true)
       }
       setIsProcessing(false)
@@ -106,7 +106,7 @@ export default function CheckoutPage() {
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
                     placeholder="Your full name"
-                    required
+                    required={user ? false : true}
                   />
                 </div>
                 <div>
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
                     onChange={(e) => setGuestEmail(e.target.value)}
                     placeholder="your@email.com"
                     type="email"
-                    required
+                    required={user ? false : true}
                   />
                 </div>
               </div>

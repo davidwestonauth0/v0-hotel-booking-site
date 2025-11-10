@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { SearchFilter } from "@/components/search-filter"
 import { HotelCard } from "@/components/hotel-card"
+import { useUser } from "@auth0/nextjs-auth0/client"
 
 interface User {
   name?: string
@@ -82,24 +83,10 @@ const SAMPLE_HOTELS = [
 ]
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null)
+  const { user } = useUser()
   const [checkIn, setCheckIn] = useState("")
   const [checkOut, setCheckOut] = useState("")
   const [guests, setGuests] = useState("1")
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me")
-        const data = await res.json()
-        setUser(data.user || null)
-      } catch (error) {
-        console.error("Failed to fetch user:", error)
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   const getHotelLink = (hotelId: number) => {
     const params = new URLSearchParams()

@@ -1,34 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
 
-interface User {
-  name?: string
-  email?: string
-}
-
 export function Header() {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me")
-        const data = await res.json()
-        setUser(data.user || null)
-      } catch (error) {
-        console.error("Failed to fetch user:", error)
-        setUser(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchUser()
-  }, [])
+  const { user, isLoading } = useUser()
 
   return (
     <header className="bg-white border-b border-border sticky top-0 z-50">

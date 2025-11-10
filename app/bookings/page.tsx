@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Header } from "@/components/header"
@@ -81,31 +82,15 @@ type FilterStatus = "All" | "Confirmed" | "Pending" | "Completed" | "Cancelled"
 
 export default function BookingsPage() {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, isLoading } = useUser()
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("All")
   const [bookings, setBookings] = useState<Booking[]>(SAMPLE_BOOKINGS)
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me")
-        const data = await res.json()
-        if (!data.user) {
-          router.push("/api/auth/login")
-        } else {
-          setUser(data.user)
-        }
-      } catch (error) {
-        console.error("Failed to fetch user:", error)
-        router.push("/api/auth/login")
-      } finally {
-        setIsLoading(false)
-      }
+    if (!isLoading && !user) {
+      router.push("/api/auth/login")
     }
-
-    fetchUser()
-  }, [router])
+  }, [user, isLoading, router])
 
   const filteredBookings = filterStatus === "All" ? bookings : bookings.filter((b) => b.status === filterStatus)
 

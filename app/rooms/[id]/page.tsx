@@ -2,9 +2,10 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Header } from "@/components/header"
@@ -162,7 +163,7 @@ export default function RoomDetailsPage() {
   const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const { user } = useUser()
   const hotelId = Number.parseInt(params.id as string)
   const hotel = SAMPLE_HOTELS[hotelId]
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null)
@@ -170,20 +171,6 @@ export default function RoomDetailsPage() {
   const [checkIn, setCheckIn] = useState(searchParams.get("checkIn") || "")
   const [checkOut, setCheckOut] = useState(searchParams.get("checkOut") || "")
   const [guests, setGuests] = useState(searchParams.get("guests") || "1")
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me")
-        const data = await res.json()
-        setUser(data.user || null)
-      } catch (error) {
-        console.error("Failed to fetch user:", error)
-      }
-    }
-
-    fetchUser()
-  }, [])
 
   if (!hotel) {
     return (

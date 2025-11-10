@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
+import { useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Header } from "@/components/header"
@@ -63,32 +64,16 @@ const SAMPLE_BOOKINGS = {
 export default function BookingDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, isLoading } = useUser()
   const bookingId = params.id as string
 
   const booking = SAMPLE_BOOKINGS[bookingId as keyof typeof SAMPLE_BOOKINGS]
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me")
-        const data = await res.json()
-        if (!data.user) {
-          router.push("/api/auth/login")
-        } else {
-          setUser(data.user)
-        }
-      } catch (error) {
-        console.error("Failed to fetch user:", error)
-        router.push("/api/auth/login")
-      } finally {
-        setIsLoading(false)
-      }
+    if (!isLoading && !user) {
+      router.push("/api/auth/login")
     }
-
-    fetchUser()
-  }, [router])
+  }, [user, isLoading, router])
 
   if (isLoading) {
     return (

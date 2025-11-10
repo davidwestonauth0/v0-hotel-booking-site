@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import { UserProvider } from "@auth0/nextjs-auth0/client"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -20,8 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        {children}
-        {/* Analytics component removed as per updates */}
+        <UserProvider>{children}</UserProvider>
       </body>
     </html>
   )
