@@ -3,50 +3,73 @@
 import Link from "next/link"
 import { useUser } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
+import { Menu, User } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export function Header() {
   const { user, isLoading } = useUser()
 
   return (
-    <header className="bg-white border-b border-border sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">0</div>
-            <span className="font-bold text-lg text-foreground">Hotel0</span>
+    <header className="border-b">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <Link href="/" className="text-2xl font-bold">
+          Hotel Booking
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-6">
+          <Link href="/" className="hover:text-primary">
+            Home
           </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/" className="text-foreground hover:text-primary transition">
-              Hotels
+          {user && (
+            <Link href="/bookings" className="hover:text-primary">
+              My Bookings
             </Link>
-            {user && (
-              <Link href="/bookings" className="text-foreground hover:text-primary transition">
-                My Bookings
-              </Link>
-            )}
-          </nav>
+          )}
+        </nav>
 
-          <div className="flex items-center gap-4">
-            {!isLoading && !user && (
-              <>
-                <Link href="/api/auth/login">
-                  <Button variant="ghost">Sign In</Button>
-                </Link>
-                <Link href="/api/auth/login?screen_hint=signup">
-                  <Button className="bg-primary hover:bg-primary/90 text-white">Sign Up</Button>
-                </Link>
-              </>
-            )}
-            {user && (
-              <>
-                <span className="text-sm text-foreground">{user.name}</span>
-                <Link href="/api/auth/logout">
-                  <Button variant="ghost">Sign Out</Button>
-                </Link>
-              </>
-            )}
-          </div>
+        <div className="flex items-center gap-4">
+          {isLoading ? (
+            <div className="h-10 w-20 animate-pulse bg-muted rounded" />
+          ) : user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem disabled>{user.email}</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/bookings">My Bookings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/api/auth/logout">Logout</a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild>
+              <a href="/api/auth/login">Sign In</a>
+            </Button>
+          )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/">Home</Link>
+              </DropdownMenuItem>
+              {user && (
+                <DropdownMenuItem asChild>
+                  <Link href="/bookings">My Bookings</Link>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

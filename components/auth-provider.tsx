@@ -1,12 +1,14 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import type React from "react"
+
+import { createContext, useContext, useEffect, useState } from "react"
 
 interface User {
-  sub: string
-  name: string
-  email: string
+  email?: string
+  name?: string
   picture?: string
+  sub?: string
 }
 
 interface AuthContextType {
@@ -19,21 +21,25 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
 })
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        setUser(data)
-        setIsLoading(false)
-      })
-      .catch(() => {
+    async function fetchUser() {
+      try {
+        const response = await fetch("/api/auth/me")
+        const data = await response.json()
+        setUser(data.user || null)
+      } catch (error) {
+        console.error("[v0] Error fetching user:", error)
         setUser(null)
+      } finally {
         setIsLoading(false)
-      })
+      }
+    }
+
+    fetchUser()
   }, [])
 
   return <AuthContext.Provider value={{ user, isLoading }}>{children}</AuthContext.Provider>

@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server"
-import { getSession } from "@auth0/nextjs-auth0"
+import { auth0 } from "@/lib/auth0"
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const response = new NextResponse()
-    const session = await getSession(request, response)
+    const session = await auth0.getSession()
 
     if (!session) {
-      return NextResponse.json(null, { status: 401 })
+      return NextResponse.json({ user: null })
     }
 
-    return NextResponse.json(session.user)
+    return NextResponse.json({ user: session.user })
   } catch (error) {
-    console.error("Error fetching user session:", error)
-    return NextResponse.json(null, { status: 401 })
+    console.error("[v0] Error fetching session:", error)
+    return NextResponse.json({ user: null })
   }
 }
