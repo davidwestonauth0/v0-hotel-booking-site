@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { getSession } from "@auth0/nextjs-auth0/server"
+import auth0 from "@/lib/auth0"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const session = await getSession()
+    const session = await auth0.getSession(request)
 
     if (!session) {
       return NextResponse.json(null, { status: 401 })

@@ -1,6 +1,6 @@
-import { Auth0Client } from "@auth0/nextjs-auth0/server"
+import { initAuth0 } from "@auth0/nextjs-auth0"
 
-export const auth0 = new Auth0Client({
+export default initAuth0({
   secret: process.env.AUTH0_SECRET,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
   baseURL: process.env.APP_BASE_URL,
